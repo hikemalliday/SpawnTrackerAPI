@@ -27,8 +27,11 @@ mob_master = [
         ("Drusella", 72, 8),
         ("an angry goblin", 72, 8),
         ("Venril Sathir", 72, 8),
-        # Zlandicar
-        ("Zlandicar", 120, 8)
+        # Velious
+        ("Zlandicar", 120, 8),
+        ("Derakor the Vindicator", 8, 0),
+        ("King Tormax", 156, 8),
+        ("Lord Yelinak", 156, 8),
     ]
 
 mob_deaths = [

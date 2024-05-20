@@ -8,6 +8,7 @@ import asyncio
 from api_interface import router as api_router
 import ssl
 from tables import create_tables
+from calendar_alerts import calendar_alerts
 
 # SSL
 ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
@@ -36,6 +37,7 @@ async def run_discord_bot():
 @app.on_event("startup")
 async def startup_event():
     asyncio.create_task(run_discord_bot())
+    asyncio.create_task(calendar_alerts())
 
 app.include_router(api_router)
 

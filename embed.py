@@ -8,7 +8,7 @@ def mob_spawn_embed(zone_name: str, time_stamp: str) -> object:
     embed.set_footer(text=time_stamp)
     return embed
 
-def mob_death_embed(mob_name: str, death_time: str, respawn_time: str) -> object:
+def mob_death_embed(death_time: str, mob_name: str, respawn_time: str) -> object:
     embed = discord.Embed(title='Mob has died', color=discord.Color.random())
     embed.set_thumbnail(url=f'{froak_icon}')
     embed.add_field(name='Mob Name', value=mob_name)

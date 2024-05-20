@@ -70,7 +70,9 @@ def get_spawn_calendar():
         current_time = datetime.now()
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
+        c.execute('''SELECT * FROM mob_death ORDER BY respawn_time''')
         results = c.fetchall()
+        print(results)
         if results:
             for result in results:
                 id = result[0]
