@@ -1,11 +1,14 @@
 from datetime import datetime, timedelta
 from bot_instance import bot
+import sqlite3
+from config import DB_PATH
 
 def calculate_respawn_time(mob_name: str, time_stamp: str):
     # Take in the time_stamp str, convert to datetime obj, add timedelta, convert to string, then return
     time_stamp_object = datetime.strptime(time_stamp, "%a %b %d %H:%M:%S %Y")
     try:
-        c = bot.db_connection.cursor()
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
         query_mob_master = '''
         SELECT mob_name, respawn_timer, variance FROM mob_master
         WHERE mob_name = ?
@@ -20,3 +23,5 @@ def calculate_respawn_time(mob_name: str, time_stamp: str):
             return new_timestamp_str
     except Exception as e:
         print(str(e))
+    finally:
+        conn.close()

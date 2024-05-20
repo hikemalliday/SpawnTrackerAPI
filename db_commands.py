@@ -5,14 +5,15 @@ from config import DB_PATH
 from datetime import datetime
 from helper2 import calculate_respawn_time
 
-def insert_mob_spawn(fields: tuple):
+def insert_mob_spawn(payload: dict):
     try:
+        spawn_time = payload.spawn_time
+        mob_zone = payload.mob_zone
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         query = '''SELECT * FROM mob_spawn WHERE spawn_time = ? AND mob_zone = ?'''
-        c.execute(query, fields)
+        c.execute(query, (spawn_time, mob_zone))
         row = c.fetchone()
-        print(f"row: {row}")
         if row:
             print("mob entry already exists, abort")
             return
@@ -20,7 +21,7 @@ def insert_mob_spawn(fields: tuple):
         insert = '''INSERT INTO mob_spawn (spawn_time, mob_zone)
                 VALUES (?, ?)
     '''
-        c.execute(insert, fields)
+        c.execute(insert, (spawn_time, mob_zone))
         conn.commit()
         print("SUCCESS: Inserted mob_spawn")
         return True
@@ -31,25 +32,12 @@ def insert_mob_spawn(fields: tuple):
     finally:
         conn.close()
 
-# TODO: We will be deleteing this, we no longer will use the spawn calender table
-def insert_spawn_calendar_row(mob_name: str, respawn_time: str):
+def insert_mob_death(payload: dict):
     try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        spawn_calendar_query = '''INSERT INTO spawn_calendar (mob_name, mob_respawn) VALUES(?, ?)'''
-        c.execute(spawn_calendar_query, (mob_name, respawn_time))
-        conn.commit()
-    except Exception as e:
-        print("ERROR: Could not insert mob_calendar")
-        print(str(e))
-
-def delete_spawn_calender():
-    pass
-
-def insert_mob_death(fields: tuple):
-    try:
-        death_time = fields[0]
-        mob_name = fields[1]
+        death_time = payload.death_time
+        mob_name = payload.mob_name
+        if death_time is None:
+            death_time = datetime.now().strftime('%m/%d/%y/%H:%M')
         respawn_time = calculate_respawn_time(mob_name, death_time)
         #time_stamp = datetime.strptime(death_time, "%a %b %d %H:%M:%S %Y")
 
@@ -76,38 +64,13 @@ def insert_mob_death(fields: tuple):
     finally:
         conn.close()
 
-# TODO: DESECRATED
-def remove_spawned_rows():
-    try:
-        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        c = bot.db_connection.cursor()
-
-        # Fetch rows where mob_respawn is in the past
-        c.execute("SELECT id FROM spawn_calendar WHERE mob_respawn < ?", (current_time,))
-        rows_to_delete = c.fetchall()
-
-        # Delete rows where mob_respawn is in the past
-        for row in rows_to_delete:
-            c.execute("DELETE FROM spawn_calendar WHERE id = ?", row)
-        
-        bot.db_connection.commit()
-        print("Expired entries removed successfully.")
-        return True
-    except Exception as e:
-        print("Error removing expired entries:", e)
-        return False
-    
-# TODO: DESEECRATED
-# Re-name ot get_spawn_calender
 def get_spawn_calendar():
     try:
         calendar = []
         current_time = datetime.now()
-        c = bot.db_connection.cursor()
-        c.execute('''SELECT * FROM mob_death ORDER BY respawn_time''')
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
         results = c.fetchall()
-        print("get_spawn_calendar_rows.results:")
-        print(results)
         if results:
             for result in results:
                 id = result[0]
@@ -120,10 +83,16 @@ def get_spawn_calendar():
             return calendar
     except Exception as e:
         print("Error getting spawn_calendar rows:", e)
+    finally:
+        conn.close()
 
+# Used for deleting a mob_spawn
+# The discord interface selects a row to delete based on ID, therefor 
+# we
 def get_mob_spawn_row(mob_death: int):
     try:
-        c = bot.db_connection.cursor()
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cusor()
         c.execute('''SELECT * FROM mob_death WHERE id = ?''', (mob_death,))
         result = c.fetchall()
         row = result[0]
@@ -135,20 +104,25 @@ def get_mob_spawn_row(mob_death: int):
     except Exception as e:
         print(str(e))
         return str(e)
+    finally:
+        conn.close()
     
 def delete_mob_death_by_id(mob_death: int):
      try:
-        c = bot.db_connection.cursor()
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
         c.execute('''DELETE FROM mob_death WHERE id = ?''', (mob_death,))
-        bot.db_connection.commit()
+        conn.commit()
      except Exception as e:
         print(str(e))
         return str(e)
+     finally:
+        conn.close()
      
 async def fetch_mob_names(mob_name: str):
     try:
         like_pattern = f'{mob_name}%'
-        conn = bot.db_connection
+        conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         c.execute(f'''
                 SELECT mob_name FROM mob_master WHERE mob_name LIKE ?
@@ -165,4 +139,6 @@ async def fetch_mob_names(mob_name: str):
     except Exception as e:
         print('fetch_mob_names error:', str(e))
         return str(e)
+    finally:
+        conn.close()
         

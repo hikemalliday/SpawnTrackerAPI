@@ -7,6 +7,7 @@ from datetime import datetime
 
 @app_commands.command(name='calendar')
 async def calendar(interaction: discord.Interaction):
+    print("SpawnTrackerApi Calender Test")
     results = await logic.calendar()
     if type(results) == str:
         await interaction.response.send_message(results)

@@ -1,11 +1,14 @@
 from bot_instance import bot
 import fixtures
 from helper2 import calculate_respawn_time
+import sqlite3
+from config import DB_PATH
 
 
 def create_config_table():
     try:
-        c = bot.db_connection.cursor()
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
         # drop_query = '''
         # DROP TABLE config
         # '''
@@ -21,7 +24,7 @@ def create_config_table():
         '''
 
         c.execute(create)
-        bot.db_connection.commit()
+        conn.commit()
         print("config table created.")
 
         c.execute("SELECT COUNT(*) FROM config")
@@ -35,10 +38,13 @@ def create_config_table():
     except Exception as e:
         print(str(e))
         return str(e)
+    finally:
+        conn.close()
 
 def create_mob_death_table():
     try:
-        c = bot.db_connection.cursor()
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
         # drop_query = '''
         # DROP TABLE mob_death
         # '''
@@ -52,9 +58,9 @@ def create_mob_death_table():
             respawn_time TEXT NOT NULL
         )
         '''
-
         c.execute(create)
-        bot.db_connection.commit()
+        conn.commit()
+
         c.execute('''SELECT * FROM mob_death''')
         rows = c.fetchall()
         if len(rows) == 0:
@@ -67,20 +73,23 @@ def create_mob_death_table():
                 row = (mob_name, death_time, respawn_time)
                 data_to_insert.append(row)
             c.executemany(insert_query, data_to_insert)
-            bot.db_connection.commit()
+            conn.commit()
             print("Fixture data inserted into mob_death table.")
     except Exception as e:
         print(str(e))
         return str(e)
+    finally:
+        conn.close()
 
 def create_mob_spawn_table():
     try:
-        c = bot.db_connection.cursor()
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
         drop_query = '''
         DROP TABLE mob_spawn
         '''
         c.execute(drop_query)
-        bot.db_connection.commit()
+        conn.commit()
         query = '''
         CREATE TABLE IF NOT EXISTS mob_spawn (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -90,20 +99,23 @@ def create_mob_spawn_table():
         '''
 
         c.execute(query)
-        bot.db_connection.commit()
+        conn.commit()
         print("mob_spawn table created.")
     except Exception as e:
         print(str(e))
         return str(e)
+    finally:
+        conn.close()
     
 def create_mob_master():
     try:
-        c = bot.db_connection.cursor()
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
         drop_query = '''
         DROP TABLE mob_master
         '''
         c.execute(drop_query)
-        bot.db_connection.commit()
+        conn.commit()
         create = '''
         CREATE TABLE IF NOT EXISTS mob_master (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -113,7 +125,7 @@ def create_mob_master():
         )
         '''
         c.execute(create)
-        bot.db_connection.commit()
+        conn.commit()
         print("mob_master table created.")
         # If table is newly created, insert
         select = '''SELECT * FROM mob_master'''
@@ -126,11 +138,13 @@ def create_mob_master():
                 VALUES (?, ?, ?)
             '''
             c.executemany(insert, fixtures.mob_master)  
-            bot.db_connection.commit()
+            conn.commit()
             print("mob_master inserts performed.")
     except Exception as e:
         print(str(e))
         return str(e)
+    finally:
+        conn.close()
 
 def create_tables():
     create_config_table()

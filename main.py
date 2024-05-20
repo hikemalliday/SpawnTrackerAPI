@@ -17,9 +17,6 @@ app = FastAPI()
 
 async def run_discord_bot():
     try:
-        db = DatabaseConnection(DB_PATH)
-        db.open()
-        bot.db_connection = db.connection
         create_tables()
         @bot.event
         async def on_ready():
@@ -35,7 +32,6 @@ async def run_discord_bot():
         await bot.start(BOT_TOKEN)
     finally:
         print("bot launch finally block")
-        bot.db_connection.close()
 
 @app.on_event("startup")
 async def startup_event():
