@@ -1,14 +1,17 @@
 from bot_instance import bot
+from discord import Embed
 
-async def send_message_to_guild(guild_id, channel_id, message):
+async def send_message_to_guild(guild_id: int, channel_id: int, message: str | Embed = None):
     guild = bot.get_guild(guild_id)
     print(f"guild: {guild}")
     if guild:
-        # Replace CHANNEL_ID with the actual ID of the channel you want to send the message to
         channel = guild.get_channel(channel_id)
         if channel:
-            await channel.send(message)
+            if message != str:
+                await channel.send(embed=message)
+            else:
+                await channel.send(message)
         else:
-            print("Channel not found for guild:", guild_id)
+            print(f"Channel not found for guild: {guild_id}")
     else:
-        print("Guild not found:", guild_id)
+        print(f"Guild not found: {guild_id}")

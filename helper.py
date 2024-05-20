@@ -4,6 +4,8 @@ from bot_instance import bot
 import discord
 from db_commands import fetch_mob_names
 from helper2 import calculate_respawn_time
+import sqlite3
+from config import DB_PATH
 
 async def mob_name_autocomplete(interaction: discord.Interaction, current: str):
     mob_names = await fetch_mob_names(current)
@@ -117,7 +119,8 @@ def is_mob_spawn_due(mob_name: str, death_time: str):
     
 async def mob_death_autocomplete(interaction: discord.Interaction, current: str):
     try:
-        c = bot.db_connection.cursor()
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
         query = '''SELECT * FROM mob_death ORDER BY id DESC LIMIT 25'''
         c.execute(query)
         mob_deaths = c.fetchall()
@@ -137,4 +140,6 @@ async def mob_death_autocomplete(interaction: discord.Interaction, current: str)
     except Exception as e:
         print(str(e))
         return str(e)
+    finally:
+        conn.close()
 

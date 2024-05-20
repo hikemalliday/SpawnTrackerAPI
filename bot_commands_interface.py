@@ -17,6 +17,7 @@ async def calendar(interaction: discord.Interaction):
 @app_commands.command(name='add_mob_death')
 @app_commands.describe(mob_name='Select mob name', death_time='Enter time of death')
 async def add_mob_death(interaction: discord.Interaction, mob_name: str, death_time: str = None):
+    print("bot_commands_interface.add_mob_death")
     if death_time is None:
         death_time = datetime.now().strftime('%m/%d/%y/%H:%M') 
     results = await logic.add_mob_death(mob_name, death_time)

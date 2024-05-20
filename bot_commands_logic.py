@@ -17,6 +17,8 @@ async def calendar():
     
 async def add_mob_death(mob_name: str, death_time: str):
     try:
+        print("bot_commands_logic.add_mob_death:")
+        print(f"{mob_name}, {death_time}")
         formatted_str = helper.convert_add_mob_death_datetime(death_time)
         success = insert_mob_death((formatted_str, mob_name))
         respawn_time = helper2.calculate_respawn_time(mob_name, formatted_str)

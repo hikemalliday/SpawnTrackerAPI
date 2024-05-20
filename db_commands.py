@@ -5,10 +5,10 @@ from config import DB_PATH
 from datetime import datetime
 from helper2 import calculate_respawn_time
 
-def insert_mob_spawn(payload: dict):
+def insert_mob_spawn(payload: tuple):
     try:
-        spawn_time = payload.spawn_time
-        mob_zone = payload.mob_zone
+        spawn_time = payload[0]
+        mob_zone = payload[1]
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         query = '''SELECT * FROM mob_spawn WHERE spawn_time = ? AND mob_zone = ?'''
@@ -32,10 +32,10 @@ def insert_mob_spawn(payload: dict):
     finally:
         conn.close()
 
-def insert_mob_death(payload: dict):
+def insert_mob_death(payload: tuple):
     try:
-        death_time = payload.death_time
-        mob_name = payload.mob_name
+        death_time = payload[0]
+        mob_name = payload[1]
         if death_time is None:
             death_time = datetime.now().strftime('%m/%d/%y/%H:%M')
         respawn_time = calculate_respawn_time(mob_name, death_time)
@@ -92,7 +92,7 @@ def get_spawn_calendar():
 def get_mob_spawn_row(mob_death: int):
     try:
         conn = sqlite3.connect(DB_PATH)
-        c = conn.cusor()
+        c = conn.cursor()
         c.execute('''SELECT * FROM mob_death WHERE id = ?''', (mob_death,))
         result = c.fetchall()
         row = result[0]
