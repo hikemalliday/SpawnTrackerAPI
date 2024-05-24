@@ -44,3 +44,9 @@ def add_mob_death_embed(add_mob_death: list) -> object:
     embed.add_field(name="Will spawn at:", value=respawn_time, inline=False)
     embed.set_footer(text="All times in CST")
     return embed
+
+def calendar_alert_embed(mob_name: str) -> object:
+    embed = discord.Embed(title=f'Window Starting!', color=discord.Color.random())
+    embed.set_thumbnail(url=f'{froak_icon}')
+    embed.add_field(name=mob_name, value="", inline=False)
+    return embed

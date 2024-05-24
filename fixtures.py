@@ -1,3 +1,4 @@
+# MASTER LIST
 mob_master = [
         # Classic
         ("Nortlav the Scalekeeper", 156, 8),
@@ -14,6 +15,7 @@ mob_master = [
 
         # Kunark
         ("Trakanon", 120, 8),
+
         # VP
         ("Phara Dar", 120, 8),
         ("Druushk", 120, 8),
@@ -21,19 +23,23 @@ mob_master = [
         ("Nexona", 120, 8),
         ("Silverwing", 120, 8),
         ("Xygoz", 120, 8),
+
         # World
         ("Severilous", 120, 8),
         ("Talendor", 120, 8),
         ("Drusella", 72, 8),
         ("an angry goblin", 72, 8),
         ("Venril Sathir", 72, 8),
+
         # Velious
-        ("Zlandicar", 120, 8),
+        ("Zlandicar", 72, 8),
         ("Derakor the Vindicator", 8, 0),
         ("King Tormax", 156, 8),
         ("Lord Yelinak", 156, 8),
+        ("Dozekar the Cursed", 156, 8),
+        ("Kelorek`Dar", 72, 8),
     ]
-
+# MOCK DATA
 mob_deaths = [
         # Classic
         ["Nortlav the Scalekeeper", "Tue Apr 30 21:00:27 2024"],
