@@ -47,7 +47,7 @@ if __name__ == "__main__":
     print("main block")
     uvicorn.run(
         app,
-        host=DEV_HOST,  
+        host=HOST,  
         port=8000
     )
 

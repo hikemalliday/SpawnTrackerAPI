@@ -8,7 +8,7 @@ from helper import calculate_respawn_time
 
 
 router = APIRouter()
-
+print("router debug")
 class MobDeathRegexPayload(BaseModel):
     death_time: str
     mob_name: str
