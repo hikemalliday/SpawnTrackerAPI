@@ -120,6 +120,7 @@ def delete_mob_death_by_id(mob_death: int):
         return str(e)
      finally:
         conn.close()
+        
 # NOTE: Used to help add_mob_death
 async def fetch_mob_names_master(mob_name: str):
     try:
