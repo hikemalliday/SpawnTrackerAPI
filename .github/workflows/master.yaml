@@ -20,4 +20,4 @@ jobs:
 
       - name: SSH into server and update
         run: |
-          ssh mike@45.55.129.24 -t "/home/mike/projects/froakbot/update.sh"
+          ssh mike@45.55.129.24 -t "/home/mike/projects/SpawnTrackerAPI/update.sh"
