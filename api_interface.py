@@ -6,6 +6,7 @@ from db_commands import insert_mob_spawn, insert_mob_death
 from embed import mob_death_embed, mob_spawn_embed
 from helper import calculate_respawn_time
 
+
 router = APIRouter()
 
 class MobDeathRegexPayload(BaseModel):
