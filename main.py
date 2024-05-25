@@ -10,6 +10,7 @@ import ssl
 from tables import create_tables
 from calendar_alerts import calendar_alerts
 
+
 # # SSL
 # ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 # ssl_context.load_cert_chain('./cert.pem', './key.pem')
