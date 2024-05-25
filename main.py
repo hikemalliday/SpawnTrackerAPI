@@ -43,6 +43,7 @@ async def startup_event():
 app.include_router(api_router)
 
 if __name__ == "__main__":
+    print(DEV_HOST)
     print("main block")
     uvicorn.run(
         app,
