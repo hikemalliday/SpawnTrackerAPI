@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from bot_instance import bot
 from db_connection import DatabaseConnection
 import bot_commands_interface as bot_commands
-from config import BOT_TOKEN, DB_PATH
+from config import BOT_TOKEN, DB_PATH, DEV_HOST, HOST
 import uvicorn
 import asyncio
 from api_interface import router as api_router
@@ -46,6 +46,9 @@ if __name__ == "__main__":
     print("main block")
     uvicorn.run(
         app,
-        host="127.0.0.1",  
+        host=HOST,  
         port=8000
     )
+
+
+    

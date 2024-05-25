@@ -36,8 +36,9 @@ mob_master = [
         ("Derakor the Vindicator", 8, 0),
         ("King Tormax", 156, 8),
         ("Lord Yelinak", 156, 8),
-        ("Dozekar the Cursed", 72, 8),
+        ("Dozekar the Cursed", 156, 8),
         ("Kelorek`Dar", 72, 8),
+        ("Statue of Rallos Zek", 120, 8),
     ]
 # MOCK DATA
 mob_deaths = [
