@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 from bot_instance import bot
 import discord
-from db_commands import fetch_mob_names_master, fetch_mob_names_death
+from db_commands import fetch_mob_names_master
 from helper2 import calculate_respawn_time
 import sqlite3
 from config import DB_PATH
