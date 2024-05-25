@@ -36,7 +36,7 @@ mob_master = [
         ("Derakor the Vindicator", 8, 0),
         ("King Tormax", 156, 8),
         ("Lord Yelinak", 156, 8),
-        ("Dozekar the Cursed", 156, 8),
+        ("Dozekar the Cursed", 72, 8),
         ("Kelorek`Dar", 72, 8),
     ]
 # MOCK DATA

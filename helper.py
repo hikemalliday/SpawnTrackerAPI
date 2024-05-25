@@ -2,21 +2,54 @@
 from datetime import datetime, timedelta
 from bot_instance import bot
 import discord
-from db_commands import fetch_mob_names
+from db_commands import fetch_mob_names_master, fetch_mob_names_death
 from helper2 import calculate_respawn_time
 import sqlite3
 from config import DB_PATH
 
-async def mob_name_autocomplete(interaction: discord.Interaction, current: str):
-    mob_names = await fetch_mob_names(current)
+async def add_mob_death_autocomplete(interaction: discord.Interaction, current: str):
+    mob_names = await fetch_mob_names_master(current)
     if mob_names is None:
-        print(f"ERROR: mob_name_autocomplete")
-        return f"ERROR: mob_name_autocomplete"
+        print(f"ERROR: add_mob_death_autocomplete")
+        return f"ERROR: add_mob_death_autocomplete"
     choices = []
     for mob_name in mob_names:
         print(mob_name)
         choices.append(discord.app_commands.Choice(name=mob_name, value=mob_name))
     return choices
+
+async def delete_mob_death_autocomplete(interaction: discord.Interaction, current: str):
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+
+        # Fetch mob names and IDs matching the current input
+        like_pattern = f'{current}%'
+        query = '''
+            SELECT id, mob_name, death_time FROM mob_death WHERE mob_name LIKE ?
+            ORDER BY id DESC LIMIT 25
+        '''
+        c.execute(query, (like_pattern,))
+        mob_deaths = c.fetchall()
+        
+        results = []
+        for mob_death in mob_deaths:
+            id, mob_name, death_time = mob_death
+            will_respawn = is_mob_spawn_due(mob_name, death_time)
+            if will_respawn:
+                respawn_time = will_respawn
+                mob_name_display = f"{mob_name}🐲"
+                results.append(discord.app_commands.Choice(name=f"{mob_name_display}, died at: {death_time}. Respawns at: {respawn_time}", value=id))
+            else:
+                results.append(discord.app_commands.Choice(name=f"{mob_name}, died at: {death_time}", value=id))
+
+        return results
+    except Exception as e:
+        print(str(e))
+        return [discord.app_commands.Choice(name=f"Error: {str(e)}", value="-1")]
+    finally:
+        if conn:
+            conn.close()    
 
 
 def get_file_name() -> str:
@@ -117,29 +150,5 @@ def is_mob_spawn_due(mob_name: str, death_time: str):
     else:
         return None
     
-async def mob_death_autocomplete(interaction: discord.Interaction, current: str):
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        query = '''SELECT * FROM mob_death ORDER BY id DESC LIMIT 25'''
-        c.execute(query)
-        mob_deaths = c.fetchall()
-        results = []
-        for mob_death in mob_deaths:
-            id = mob_death[0]
-            mob_name = mob_death[1]
-            death_time = mob_death[2]
-            will_respawn = is_mob_spawn_due(mob_name, death_time)
-            if will_respawn:
-                respawn_time = will_respawn
-                mob_name = f"{mob_name}🐲"
-                results.append(discord.app_commands.Choice(name=f"{mob_name}, died at: {death_time}. Respawns at: {respawn_time} ", value=id))
-            else:
-                results.append(discord.app_commands.Choice(name=f"{mob_name}, died at: {death_time}", value=id))
-        return results
-    except Exception as e:
-        print(str(e))
-        return str(e)
-    finally:
-        conn.close()
+
 

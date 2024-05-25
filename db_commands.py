@@ -120,8 +120,8 @@ def delete_mob_death_by_id(mob_death: int):
         return str(e)
      finally:
         conn.close()
-     
-async def fetch_mob_names(mob_name: str):
+# NOTE: Used to help add_mob_death
+async def fetch_mob_names_master(mob_name: str):
     try:
         like_pattern = f'{mob_name}%'
         conn = sqlite3.connect(DB_PATH)
@@ -143,4 +143,5 @@ async def fetch_mob_names(mob_name: str):
         return str(e)
     finally:
         conn.close()
+
         
